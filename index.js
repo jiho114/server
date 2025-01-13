@@ -1,13 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const { User } = require('./models');
 const bcrypt = require('bcryptjs'); // 비밀번호 암호화를 위한 bcrypt
 
 const app = express();
+const cors = require('cors');
 app.use(cors({
-  origin:["8seconds-react.vercel.app", "localhost:3000"]
+  origin: ['https://8seconds-react.vercel.app', 'http://localhost:3000'],  // 클라이언트의 도메인
+  methods: ['GET', 'POST'],
 }));
+
 app.use(bodyParser.json());
 
 //회원가입
