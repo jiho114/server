@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 const sqlite3 = require('better-sqlite3');
+require('dotenv').config(); // .env 파일 로드
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
