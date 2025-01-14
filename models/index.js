@@ -1,13 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
-const sqlite3 = require('better-sqlite3');
-require('dotenv').config(); // .env 파일 로드
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './database.sqlite',
-  dialectModule: sqlite3,  // better-sqlite3을 Sequelize에 전달
 });
 
 const db = {};
@@ -34,10 +31,5 @@ sequelize.sync()
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
-console.log('DB_NAME:', process.env.DB_DIALECT);
-console.log('DB_DIALECT:', process.env.DB_DIALECT);
-console.log('DB_HOST:', process.env.DB_HOST);
-
 
 module.exports = db;
