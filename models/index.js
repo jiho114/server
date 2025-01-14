@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
+const sqlite3 = require('better-sqlite3');
 
 const sequelize = new Sequelize({
-  dialect: 'sqlite', // 데이터베이스 종류를 명시적으로 설정
-  storage: './database.sqlite', // SQLite의 경우 storage 경로 설정
+  dialect: 'sqlite',
+  storage: './database.sqlite',
+  dialectModule: sqlite3,  // better-sqlite3을 Sequelize에 전달
 });
-
 
 const db = {};
 
