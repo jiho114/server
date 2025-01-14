@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
 
 const sequelize = new Sequelize({
-  dialect: process.env.DB_DIALECT,  // .env에서 DB_DIALECT를 가져옵니다.
-  storage: process.env.DB_STORAGE,  // .env에서 DB_STORAGE를 가져옵니다.
+  dialect: 'sqlite', // 데이터베이스 종류를 명시적으로 설정
+  storage: './database.sqlite', // SQLite의 경우 storage 경로 설정
 });
 
 
