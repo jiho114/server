@@ -1,11 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT,
+  storage: process.env.DB_STORAGE, // SQLite의 경우 필요
 });
+
 
 const db = {};
 
@@ -31,5 +34,9 @@ sequelize.sync()
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_DIALECT:', process.env.DB_DIALECT);
+
 
 module.exports = db;
