@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs'); // 비밀번호 암호화를 위한 bcrypt
 
 const app = express();
 app.use(cors({
-  origin:["https://8seconds-react.vercel.app", "http://localhost:3000"]
+  origin:["https://8secondes-react.vercel.app", "http://localhost:3000"]
 }));
 app.use(bodyParser.json());
 
