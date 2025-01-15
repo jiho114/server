@@ -1,60 +1,86 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { User } = require('./models');
+const cors = require('cors');
+const models = require('./models');
 const bcrypt = require('bcryptjs'); // 비밀번호 암호화를 위한 bcrypt
 
 const app = express();
-const cors = require('cors');
 app.use(cors({
-  origin: ['https://8seconds-react.vercel.app', 'http://localhost:3000'],  // 클라이언트의 도메인
-  methods: ['GET', 'POST'],
+  origin:["https://8seconds-react.vercel.app", "http://localhost:3000"]
 }));
-
 app.use(bodyParser.json());
 
 //회원가입
-app.post('/SignUp', async (req, res) => {
+app.post("/users", (req, res) =>{
     const { username, password, email } = req.body;
-    try{
-        const hashedPassword = await bcrypt.hash(password, 10); // 10은 saltRounds
-        const newUser = await User.create({username, password : hashedPassword , email});
-        res.status(201).json(newUser);
-    } catch(error) {
-        res.status(400).json({ error:error.message})
-    }
+   
+    if(!username|| !password|| !email){
+      res.send('모든 필드를 입력해주세요')
+   }
+    models.User.create({
+      username,
+      password,
+      email
+   })
+   .then((result)=>{
+      console.log('회원가입성공:', result);
+      res.send({result,})
+   })
+   .catch((error)=>{
+      console.error(error);
+      res.status(400).send('회원가입실패')
+   })
 });
 
-app.post('/Login', async (req, res) => {
+app.post('/users/login', (req, res) => {
     const { username, password } = req.body;
-  
-    try {
-      const user = await User.findOne({ where: { username } });
-  
-      // 사용자 존재 여부 확인
-      if (!user) {
-        return res.status(400).json({ error: '아이디가 잘못되었습니다.' });
+
+    models.User.findOne({
+      where:{
+        username:username
       }
-  
-      // 비밀번호 비교
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-  
-      if (!isPasswordValid) {
-        return res.status(400).json({ error: '비밀번호가 잘못되었습니다.' });
+   })
+   .then((result)=>{
+     
+      console.log("result :" ,result)
+      if(result.username == username && result.password == password){
+         console.log('로그인 정보 성공');
+         const user = {
+            username: username
+         }
+         res.send({
+            user: result.username,
+
+         })
+      }else{
+         console.log("로그인 실패");
+         res.send({
+            user: 'False'
+         })
       }
-  
-      // 로그인 성공: 유효한 사용자 정보 반환
-      res.status(200).json({ message: '로그인 성공', user: { username: user.username } });
-    } catch (error) {
+   })
+   .catch((error)=>{
       console.error(error);
-      res.status(500).json({ error: '서버 오류가 발생했습니다.' });
-    }
-    console.log("Username:", username);
-  console.log("Password:", password);
+      res.send('유저 정보 에러 발생' + error)
+   })   
+  
+   
   });
 
 
 
-const PORT = 8080;
+const PORT = "8080";
 app.listen(PORT, ()=>{
-    console.log(`서버가 실행중입니다.`)
+    console.log(`서버가 실행중입니다.`);
+    models.sequelize   
+    .sync()
+    .then(() => {
+       console.log('✓ DB 연결 성공');
+    })
+    .catch(function (err) {
+       console.error(err);
+       console.log('✗ DB 연결 에러');
+          //에러발생시 서버프로세스 종료
+       process.exit();
+ });
 })
